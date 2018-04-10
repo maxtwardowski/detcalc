@@ -37,6 +37,7 @@ int main() {
     for (int expansionrow = 0; expansionrow < matrix_dim; expansionrow++)
         free(matrix[expansionrow]);
     free(matrix);
+    free(rawinput);
     return 0;
 }
 
