@@ -1,21 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <assert.h>
 
-double det(double ** matrix, int matrix_dim);
+double determinant(double ** matrix, int matrix_dim);
 
 int main() {
-    int matrix_dim;
-    scanf("%d", &matrix_dim);
+
+    double * rawinput = (double *) calloc(0, sizeof(double));
+    double current;
+    int itemcounter = 0;
+    while (scanf("%lf", &current) != EOF) {
+        itemcounter++;
+        rawinput = (double *) realloc(rawinput, itemcounter * sizeof(double));
+        rawinput[itemcounter - 1] = current;
+    }
+
+    //Renctangularity check
+    int calculated_dim = sqrt(itemcounter - 1);
+    if (pow(calculated_dim, 2) == itemcounter - 1)
+        printf("The matrix is rectangular\n");
+    else
+        abort();
+
+    int matrix_dim = rawinput[0];
 
     double ** matrix = (double **) malloc(matrix_dim * sizeof(double *));
-    for (int expansionrow = 0; expansionrow < matrix_dim; expansionrow++)
-        matrix[expansionrow] = malloc(matrix_dim * sizeof(double));
-    for (int expansionrow = 0; expansionrow < matrix_dim; expansionrow++)
+    for (int i = 0; i < matrix_dim; i++)
+        matrix[i] = malloc(matrix_dim * sizeof(double));
+    for (int i = 0; i < matrix_dim; i++)
         for (int j = 0; j < matrix_dim; j++)
-            scanf("%lf", &matrix[expansionrow][j]);
+            matrix[i][j] = rawinput[j + matrix_dim * i + 1];
 
-    printf("The result is: %lf \n", det(matrix, matrix_dim));
+    printf("The result is: %lf \n", determinant(matrix, matrix_dim));
 
     for (int expansionrow = 0; expansionrow < matrix_dim; expansionrow++)
         free(matrix[expansionrow]);
@@ -23,9 +40,9 @@ int main() {
     return 0;
 }
 
-double det(double ** matrix, int matrix_dim) {
+double determinant(double ** matrix, int matrix_dim) {
     int expansionrow, tocopyrow, tocopycol, minorrow, minorcol;
-    double determinant = 0;
+    double finalvalue = 0;
 
     if (matrix_dim == 1)
         return **matrix;
@@ -50,11 +67,11 @@ double det(double ** matrix, int matrix_dim) {
                     }
                 }
             }
-            determinant += pow(-1, expansionrow) * (matrix[0][expansionrow] * det(expansion_matrix, matrix_dim - 1));
+            finalvalue += pow(-1, expansionrow) * (matrix[0][expansionrow] * determinant(expansion_matrix, matrix_dim - 1));
         }
         for (int expansionrow = 0; expansionrow < matrix_dim - 1; expansionrow++)
             free(expansion_matrix[expansionrow]);
         free(expansion_matrix);
-        return determinant;
+        return finalvalue;
     }
 }
