@@ -11,11 +11,15 @@ int main() {
     double current;
     int itemcounter = 0, scancheck;
     while ((scancheck = scanf("%lf", &current)) != EOF) {
-        if (!scancheck) abort();
+        if (!scancheck) {
+            free(rawinput);
+            abort();
+        }
         itemcounter++;
         rawinput = (double *) realloc(rawinput, itemcounter * sizeof(double));
         if (!rawinput) abort();
         rawinput[itemcounter - 1] = current;
+
     }
 
     //Checking if dimensions are equal
@@ -26,6 +30,11 @@ int main() {
         abort();
 
     int matrix_dim = rawinput[0];
+
+    if (pow(matrix_dim, 2) != itemcounter - 1) {
+        free(rawinput);
+        abort();
+    }
 
     double ** matrix = (double **) malloc(matrix_dim * sizeof(double *));
     if (!matrix) abort();
