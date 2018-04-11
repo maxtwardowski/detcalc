@@ -1,5 +1,5 @@
 det: det.c
-	gcc -g -Wall -Werror -pedantic $^ -o $@ -lm
+	gcc -g -Wall -Werror -O3 -pedantic $^ -o $@ -lm
 
 .PHONY: clean
 

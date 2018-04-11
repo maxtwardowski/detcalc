@@ -6,17 +6,19 @@
 double determinant(double ** matrix, int matrix_dim);
 
 int main() {
-
     double * rawinput = (double *) calloc(0, sizeof(double));
+    if (!rawinput) abort();
     double current;
-    int itemcounter = 0;
-    while (scanf("%lf", &current) != EOF) {
+    int itemcounter = 0, scancheck;
+    while ((scancheck = scanf("%lf", &current)) != EOF) {
+        if (!scancheck) abort();
         itemcounter++;
         rawinput = (double *) realloc(rawinput, itemcounter * sizeof(double));
+        if (!rawinput) abort();
         rawinput[itemcounter - 1] = current;
     }
 
-    //Renctangularity check
+    //Checking if dimensions are equal
     int calculated_dim = sqrt(itemcounter - 1);
     if (pow(calculated_dim, 2) == itemcounter - 1)
         printf("The matrix is rectangular\n");
@@ -26,8 +28,11 @@ int main() {
     int matrix_dim = rawinput[0];
 
     double ** matrix = (double **) malloc(matrix_dim * sizeof(double *));
-    for (int i = 0; i < matrix_dim; i++)
+    if (!matrix) abort();
+    for (int i = 0; i < matrix_dim; i++) {
         matrix[i] = malloc(matrix_dim * sizeof(double));
+        if (!matrix[i]) abort();
+    }
     for (int i = 0; i < matrix_dim; i++)
         for (int j = 0; j < matrix_dim; j++)
             matrix[i][j] = rawinput[j + matrix_dim * i + 1];
@@ -51,8 +56,11 @@ double determinant(double ** matrix, int matrix_dim) {
         return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
     else {
         double ** expansion_matrix = (double **) malloc((matrix_dim - 1) * sizeof(double *));
-        for (int expansionrow = 0; expansionrow < matrix_dim - 1; expansionrow++)
+        if (!expansion_matrix) abort();
+        for (int expansionrow = 0; expansionrow < matrix_dim - 1; expansionrow++) {
             expansion_matrix[expansionrow] = (double *) malloc((matrix_dim - 1) * sizeof(double));
+            if (!expansion_matrix[expansionrow]) abort();
+        }
 
         for (expansionrow = 0; expansionrow < matrix_dim; expansionrow++) {
             minorrow = 0, minorcol = 0;
